@@ -11,7 +11,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(expressFileUpload());
-app.use(passport.initialize()); // 🔹 Initialisation de Passport
+app.use(passport.initialize()); //  Initialisation de Passport
 
 const routes = require('./exo4/routes');
 const secureRoute = require('./exo4/secure-routes');
