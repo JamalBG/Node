@@ -99,7 +99,7 @@
 		{
 			"name": "users/rm",
 			"request": {
-				"method": "DELETE",
+				"method": "POST",
 				"header": [],
 				"url": {
 					"raw": "localhost:3000/users/rm",
