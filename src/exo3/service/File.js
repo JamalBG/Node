@@ -4,9 +4,10 @@ const path = require('path');
 
 const router = express.Router();
 
+// Pour envoyer un fichier
 router.post('/', (req, res) => {
     if (!req.files || !req.files.fichier) {
-        return res.status(400).json({ error: "Aucun fichier envoyé" });
+        return res.status(400).json({ error: "Aucun fichier envoyé" }); // Si echec
     }
 
     const fichier = req.files.fichier;
