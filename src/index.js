@@ -13,7 +13,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(expressFileUpload());
 app.use(passport.initialize()); // 🔹 Initialisation de Passport
 
-/*///////// Exo 4 //////////*/ 
 const routes = require('./exo4/routes');
 const secureRoute = require('./exo4/secure-routes');
 
