@@ -5,18 +5,18 @@ const fs = require("fs");
 const path = require("path");
 const sequelize = require("../config/exo5/database");
 
-const users = []; // Pour stockage en mémoire des utilisateurs
+const users = []; // On va stocker les utilisateurs dedans
 
 const bannedUsersFile = path.join(__dirname, "bannedUsers.json");
 const router = express.Router();
 
-// Fonction pour lire la liste des utilisateurs bannis
+// Pour avoir la liste des utilisateurs bannis
 const getBannedUsers = () => {
     if (!fs.existsSync(bannedUsersFile)) return [];
     return JSON.parse(fs.readFileSync(bannedUsersFile, "utf8"));
 };
 
-// Fonction pour sauvegarder la liste mise à jour
+// Pour sauvegarder la liste mise à jour
 const saveBannedUsers = (bannedUsers) => {
     fs.writeFileSync(bannedUsersFile, JSON.stringify(bannedUsers, null, 2), "utf8");
 };
