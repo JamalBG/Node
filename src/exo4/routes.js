@@ -8,14 +8,13 @@ router.post(
     "/signup",
     passport.authenticate("signup", { session: false }),
     async (req, res) => {
-        res.json({
+        if (!req.user) {
+            return res.status(500).json({ message: "Signup failed" });
+        }
+
+        return res.json({
             message: "Signup successful",
-            user: { 
-                id: req.user.id, 
-                email: req.user.email, 
-                password: req.user.password, 
-                role: req.user.role 
-            },
+            user: req.user
         });
     }
 );
@@ -24,26 +23,18 @@ router.post(
     "/login",
     (req, res, next) => {
         passport.authenticate("login", (err, user, info) => {
-            if (err || !user) {
-                return res.status(400).json({ message: "Invalid credentials" });
+            if (err) {
+                return res.status(500).json({ message: "Internal server error", error: err.message });
+            }
+            if (!user) {
+                return res.status(401).json({ message: "Invalid credentials" });
             }
 
-            req.login(user, { session: false }, (error) => {
-                if (error) return next(error);
+            const token = jwt.sign(user, "TOP_SECRET", { expiresIn: "1h" });
 
-                const safeUser = {
-                    id: user.id,
-                    email: user.email,
-                    role: user.role
-                };
-
-                const token = jwt.sign(safeUser , "TOP_SECRET");
-
-                return res.json({ token });
-            });
+            return res.json({ message: "Login successful", token });
         })(req, res, next);
     }
 );
-
 
 module.exports = router;
