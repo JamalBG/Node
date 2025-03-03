@@ -3,13 +3,14 @@ const passport = require("passport");
 
 const router = express.Router();
 
+// Pour afficher un profil
 router.get(
     "/profil",
     passport.authenticate("jwt", { session: false }), 
     (req, res) => {
         console.log("Utilisateur authentifié :", req.user);
         res.json({
-            message: "You made it to the secure route",
+            message: "Mettre infos utilisateurs ici",
         });
     }
 );
