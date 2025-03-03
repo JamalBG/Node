@@ -32,31 +32,10 @@ app.use('/constante', constanteRoute);
 app.use('/delete', deleteRoute);
 app.use('/file', fileRoute);
 
-/*///////// Middleware d'accès admin //////*/
-const Admin = (req, res, next) => {
-  console.log("Utilisateur authentifié :", req.user);
-  
-  if (!req.user) {
-    return res.status(401).json({ message: "Utilisateur non authentifié." });
-  }
-
-  // Assurer que req.user ne contient pas de références circulaires
-  if (typeof req.user.toJSON === "function") {
-    req.user = req.user.toJSON();
-  }
-
-  if (req.user.role === "admin") {
-    return next();
-  }
-
-  return res.status(403).json({ message: "Accès refusé, vous devez être administrateur." });
-};
-
 app.use('/', routes);
 
 // 🔹 Protection avec JWT
-app.use("/delete", passport.authenticate('jwt', { session: false }), Admin, secureRoute);
-app.use("/file", passport.authenticate('jwt', { session: false }), Admin, secureRoute);
+app.use("/file", passport.authenticate('jwt', { session: false }), secureRoute);
 
 /*/////////// Middleware de gestion des erreurs /////////*/
 app.use((err, req, res, next) => {

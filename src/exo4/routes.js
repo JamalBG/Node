@@ -59,10 +59,10 @@ router.post(
     "/users/rm",
     passport.authenticate("jwt", { session: false }), // Authentification requise
     async (req, res) => {
-        if (req.user.role !== "admin") {
-            return res.status(403).json({ message: "Accès refusé. Seuls les administrateurs peuvent bannir." });
-        }
         try {
+            if (req.user.role !== "admin") {
+                return res.status(403).json({ message: "Accès refusé. Seuls les administrateurs peuvent voir la liste." });
+            }
             const { email } = req.body;
 
             if (!email) {
