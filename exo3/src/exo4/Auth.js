@@ -27,7 +27,7 @@ passport.use(
 
                 const user = await User.create({ email, password: hashedPassword, role });
 
-                return done(null, user);
+                return done(null, user, { message: "OK" });
             } catch (error) {
                 return done(error);
             }
@@ -47,12 +47,12 @@ passport.use(
                 const user = await User.findOne({ where: { email } });
 
                 if (!user) {
-                    return done(null, false, { message: "User not found" });
+                    return done(null, false, { message: "Incorect user" });
                 }
 
                 const match = await bcrypt.compare(password, user.password);
                 if (!match) {
-                    return done(null, false, { message: "Wrong password" });
+                    return done(null, false, { message: "Bad credential" });
                 }
                 const safeUser = {
                     id: user.id,
