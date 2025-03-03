@@ -2,7 +2,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const { Strategy: JWTStrategy, ExtractJwt } = require("passport-jwt");
 const bcrypt = require("bcrypt");
-const { User } = require("../config/exo5/database"); // Import correct
+const { User } = require("../config/exo5/database");
 
 passport.use(
     "signup",
@@ -10,7 +10,7 @@ passport.use(
         {
             usernameField: "email",
             passwordField: "password",
-            passReqToCallback: true, 
+            passReqToCallback: true,
         },
         async (req, email, password, done) => {
             try {
@@ -21,15 +21,15 @@ passport.use(
                     return done(null, false, { message: "Email already exists" });
                 }
 
-                const role = req.body.role && ["admin", "user"].includes(req.body.role) 
-                ? req.body.role 
-                : "user";
+                const role = req.body.role && ["admin", "user"].includes(req.body.role)
+                    ? req.body.role
+                    : "user";
 
                 const user = await User.create({ email, password: hashedPassword, role });
 
-                return done(null, user, { message: "OK" });
+                return done(null, { id: user.id, email: user.email, role: user.role }, { message: "OK" });
             } catch (error) {
-                return done(error);
+                return done(error,{ message: "KO" } );
             }
         }
     )
@@ -47,20 +47,15 @@ passport.use(
                 const user = await User.findOne({ where: { email } });
 
                 if (!user) {
-                    return done(null, false, { message: "Incorect user" });
+                    return done(null, false, { message: "Incorrect user" });
                 }
 
                 const match = await bcrypt.compare(password, user.password);
                 if (!match) {
                     return done(null, false, { message: "Bad credential" });
                 }
-                const safeUser = {
-                    id: user.id,
-                    email: user.email,
-                    role: user.role
-                };
 
-                return done(null, safeUser, { message: "Logged in Successfully" });
+                return done(null, { id: user.id, email: user.email, role: user.role }, { message: "Logged in Successfully" });
             } catch (error) {
                 return done(error);
             }
@@ -75,20 +70,11 @@ passport.use(
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         },
         async (payload, done) => {
-            console.log("Payload extrait du token :", payload); 
             try {
-                return done(null, payload); 
+                return done(null, payload);
             } catch (error) {
                 return done(error);
             }
         }
     )
 );
-
-/*  
- http://localhost:3000/login 
-{
-  "email": "test@example.com",
-  "password": "123456"
-}*/
-

@@ -4,7 +4,7 @@ const passport = require("passport");
 const router = express.Router();
 
 router.get(
-    "/profile",
+    "/profil",
     passport.authenticate("jwt", { session: false }), 
     (req, res) => {
         console.log("Utilisateur authentifié :", req.user);
